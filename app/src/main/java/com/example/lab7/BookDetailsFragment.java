@@ -49,10 +49,11 @@ public class BookDetailsFragment extends Fragment {
 
         textView = view.findViewById(R.id.textView);
         textView.setGravity(Gravity.CENTER);
+        setBookDetails(title, author);
         return view;
     }
 
-    public void setBookDetails(String author, String title) {
+    public void setBookDetails(String title, String author) {
         textView.setText(title + "\n" + author);
     }
 }

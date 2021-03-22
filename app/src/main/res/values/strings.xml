@@ -7,11 +7,25 @@
         <item>The Fellowship of the Ring</item>
         <item>The Two Towers</item>
         <item>Return of the King</item>
+        <item>Dune</item>
+        <item>A Game of Thrones</item>
+        <item>A Clash of Kings</item>
+        <item>A Storm of Swords</item>
+        <item>A Feast for Crows</item>
+        <item>A Dance with Dragons</item>
+        <item>The Winds of Winter</item>
     </string-array>
 
     <string-array name="book_authors">
         <item>J.R.R. Tolkien</item>
         <item>J.R.R. Tolkien</item>
         <item>J.R.R. Tolkien</item>
+        <item>Frank Herbert</item>
+        <item>George R.R. Martin</item>
+        <item>George R.R. Martin</item>
+        <item>George R.R. Martin</item>
+        <item>George R.R. Martin</item>
+        <item>George R.R. Martin</item>
+        <item>George R.R. Martin</item>
     </string-array>
 </resources>
