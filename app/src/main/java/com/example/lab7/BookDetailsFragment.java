@@ -16,7 +16,8 @@ public class BookDetailsFragment extends Fragment {
     String author = "";
     public static final String TITLE = "title";
     public static final String AUTHOR = "author";
-    TextView textView;
+    TextView titleText;
+    TextView authorText;
 
     public BookDetailsFragment() {
         // Required empty public constructor
@@ -47,13 +48,16 @@ public class BookDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_book_details, container, false);
 
-        textView = view.findViewById(R.id.textView);
-        textView.setGravity(Gravity.CENTER);
+        titleText = view.findViewById(R.id.bookTitle);
+        authorText = view.findViewById(R.id.bookAuthor);
+        titleText.setGravity(Gravity.CENTER);
+        authorText.setGravity(Gravity.CENTER);
         setBookDetails(title, author);
         return view;
     }
 
     public void setBookDetails(String title, String author) {
-        textView.setText(title + "\n" + author);
+        titleText.setText(title);
+        authorText.setText(author);
     }
 }
