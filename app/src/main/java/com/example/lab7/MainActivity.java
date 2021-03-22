@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             BookDetailsFragment bdFragment = BookDetailsFragment.newInstance(title, author);
             fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
         } else {
-
+            bdFragment.setBookDetails(title, author);
         }
     }
 }

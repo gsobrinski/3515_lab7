@@ -4,16 +4,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BookDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BookDetailsFragment extends Fragment {
 
     String title = "";
@@ -52,8 +48,11 @@ public class BookDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_book_details, container, false);
 
         textView = view.findViewById(R.id.textView);
-        textView.setText(title + " " + author);
-
+        textView.setGravity(Gravity.CENTER);
         return view;
+    }
+
+    public void setBookDetails(String author, String title) {
+        textView.setText(title + "\n" + author);
     }
 }
