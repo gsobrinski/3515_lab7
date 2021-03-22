@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.BookListInterface {
 
-    BookListFragment blFragment;
+    BookDetailsFragment bdFragment;
     FragmentManager fragmentManager;
 
     boolean landscape;
@@ -17,14 +17,19 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_layout);
 
-        // create the BookListFragment - this always appears on the first page regardless of orientation
-        blFragment = new BookListFragment();
+        if (findViewById(R.id.frame2) == null) {
+            landscape = false;
+        } else {
+            landscape = true;
+        }
+        bdFragment = new BookDetailsFragment();
 
-        landscape = findViewById(R.id.frame2) == null;
+        fragmentManager = getSupportFragmentManager();
 
+        fragmentManager.beginTransaction().replace(R.id.frame1, new BookListFragment()).commit();
 
         if (landscape) {
-            fragmentManager.beginTransaction().replace(R.id.frame2, blFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.frame2, bdFragment).commit();
         }
 
     }
@@ -32,6 +37,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     // implemented from BookListFragment's interface
     @Override
     public void getClickedBook(String bookTitle) {
+        if(!landscape) {
+            BookDetailsFragment bdFragment = BookDetailsFragment.newInstance(bookTitle);
+            fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
+        } else {
 
+        }
     }
 }
