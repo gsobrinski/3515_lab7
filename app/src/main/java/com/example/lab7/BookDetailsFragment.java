@@ -49,7 +49,7 @@ public class BookDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_book_details, container, false);
 
         textView = view.findViewById(R.id.textView);
-
+        textView.setText(bookTitle);
 
         return view;
     }

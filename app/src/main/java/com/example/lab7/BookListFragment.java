@@ -23,7 +23,9 @@ public class BookListFragment extends Fragment {
     private ListView listView;
     Context context;
 
+    // book title and author
     ArrayList<String> books;
+    ArrayList<String> authors;
 
     public BookListFragment() {
 

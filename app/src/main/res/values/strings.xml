@@ -8,4 +8,10 @@
         <item>The Two Towers</item>
         <item>Return of the King</item>
     </string-array>
+
+    <string-array name="book_authors">
+        <item>J.R.R. Tolkien</item>
+        <item>J.R.R. Tolkien</item>
+        <item>J.R.R. Tolkien</item>
+    </string-array>
 </resources>
