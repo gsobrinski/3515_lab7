@@ -36,9 +36,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     // implemented from BookListFragment's interface
     @Override
-    public void getClickedBook(String bookTitle) {
+    public void getClickedBook(String title, String author) {
         if(!landscape) {
-            BookDetailsFragment bdFragment = BookDetailsFragment.newInstance(bookTitle);
+            BookDetailsFragment bdFragment = BookDetailsFragment.newInstance(title, author);
             fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
         } else {
 

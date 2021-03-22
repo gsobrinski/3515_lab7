@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class BookListFragment extends Fragment {
 
@@ -44,20 +46,24 @@ public class BookListFragment extends Fragment {
 
         listView = view.findViewById(R.id.listView);
 
-        // get String array as ArrayList
+        // get title and author ArrayLists from strings.xml
         books = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.book_titles)));
+        authors = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.book_authors)));
+
+        ListAdapter adapter = new ListAdapter(context, books, authors);
 
         // create adapter to turn string-array into listView
-        listView.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, books));
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String bookTitle = (String) parent.getItemAtPosition(position);
-
+                Pair book = (Pair) parent.getItemAtPosition(position);
+                String title = (String) book.first;
+                String author = (String) book.second;
                 // use MainActivity's method in this context
                 BookListInterface blInterface = (BookListInterface) context;
-                blInterface.getClickedBook(bookTitle);
+                blInterface.getClickedBook(title, author);
             }
         });
 
@@ -65,7 +71,7 @@ public class BookListFragment extends Fragment {
     }
 
     interface BookListInterface {
-        void getClickedBook(String bookTitle);
+        void getClickedBook(String title, String author);
     }
 
 //    /**

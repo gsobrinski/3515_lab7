@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -17,18 +16,21 @@ import android.widget.TextView;
  */
 public class BookDetailsFragment extends Fragment {
 
-    String bookTitle = "";
-    public static final String BOOK_TITLE = "book_title";
+    String title = "";
+    String author = "";
+    public static final String TITLE = "title";
+    public static final String AUTHOR = "author";
     TextView textView;
 
     public BookDetailsFragment() {
         // Required empty public constructor
     }
 
-    public static BookDetailsFragment newInstance(String bookTitle) {
+    public static BookDetailsFragment newInstance(String title, String author) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(BOOK_TITLE, bookTitle);
+        args.putString(TITLE, title);
+        args.putString(AUTHOR, author);
 
         fragment.setArguments(args);
         return fragment;
@@ -38,7 +40,8 @@ public class BookDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bookTitle = getArguments().getString(BOOK_TITLE);
+            title = getArguments().getString(TITLE);
+            author = getArguments().getString(AUTHOR);
         }
     }
 
@@ -49,7 +52,7 @@ public class BookDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_book_details, container, false);
 
         textView = view.findViewById(R.id.textView);
-        textView.setText(bookTitle);
+        textView.setText(title + " " + author);
 
         return view;
     }

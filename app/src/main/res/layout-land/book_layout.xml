@@ -8,9 +8,12 @@
 
     <FrameLayout
         android:id="@+id/frame1"
-        android:layout_width="276dp"
-        android:layout_height="408dp"
+        android:layout_width="254dp"
+        android:layout_height="326dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="1dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/frame2"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,8 +23,11 @@
 
     <FrameLayout
         android:id="@+id/frame2"
-        android:layout_width="453dp"
-        android:layout_height="408dp"
+        android:layout_width="457dp"
+        android:layout_height="324dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/frame1"
