@@ -1,25 +1,37 @@
 package com.example.lab7;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookListInterface {
 
-    BookList books;
+    BookListFragment blFragment;
+    FragmentManager fragmentManager;
+
+    boolean landscape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_layout);
 
-        // create BookList
-        books = new BookList();
+        // create the BookListFragment - this always appears on the first page regardless of orientation
+        blFragment = new BookListFragment();
 
-        // populate the BookList
-        for(int i = 0; i < 10; i++) {
-            Book book = new Book(String.valueOf(i), String.valueOf(i));
-            books.addBook(book);
+        landscape = findViewById(R.id.frame2) == null;
+
+
+        if (landscape) {
+            fragmentManager.beginTransaction().replace(R.id.frame2, blFragment).commit();
         }
+
+    }
+
+    // implemented from BookListFragment's interface
+    @Override
+    public void getClickedBook(String bookTitle) {
+
     }
 }
