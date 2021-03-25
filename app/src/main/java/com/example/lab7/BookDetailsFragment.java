@@ -2,6 +2,7 @@ package com.example.lab7;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.Gravity;
@@ -16,6 +17,7 @@ public class BookDetailsFragment extends Fragment {
     String author = "";
     public static final String TITLE = "title";
     public static final String AUTHOR = "author";
+
     TextView titleText;
     TextView authorText;
 
@@ -23,6 +25,7 @@ public class BookDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
+    // FACTORY METHOD
     public static BookDetailsFragment newInstance(String title, String author) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
@@ -45,6 +48,7 @@ public class BookDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_book_details, container, false);
 
@@ -60,4 +64,5 @@ public class BookDetailsFragment extends Fragment {
         titleText.setText(title);
         authorText.setText(author);
     }
+
 }

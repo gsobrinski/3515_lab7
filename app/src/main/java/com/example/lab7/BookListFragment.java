@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
@@ -29,6 +30,9 @@ public class BookListFragment extends Fragment {
     ArrayList<String> books;
     ArrayList<String> authors;
 
+    public static final String TITLES = "titles";
+    public static final String AUTHORS = "authors";
+
     public BookListFragment() {
 
     }
@@ -37,6 +41,17 @@ public class BookListFragment extends Fragment {
     public void onAttach(Context mainContext) {
         super.onAttach(mainContext);
         this.context = mainContext;
+    }
+
+    // FACTORY METHOD
+    public static BookListFragment newInstance(ArrayList titles, ArrayList authors) {
+        BookListFragment fragment = new BookListFragment();
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(TITLES, titles);
+        args.putParcelableArrayList(AUTHORS, authors);
+
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
