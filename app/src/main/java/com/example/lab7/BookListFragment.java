@@ -44,14 +44,8 @@ public class BookListFragment extends Fragment {
     }
 
     // FACTORY METHOD
-    public static BookListFragment newInstance(ArrayList titles, ArrayList authors) {
-        BookListFragment fragment = new BookListFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(TITLES, titles);
-        args.putParcelableArrayList(AUTHORS, authors);
-
-        fragment.setArguments(args);
-        return fragment;
+    public static BookListFragment newInstance() {
+        return new BookListFragment();
     }
 
     @Override
@@ -88,31 +82,4 @@ public class BookListFragment extends Fragment {
     interface BookListInterface {
         void getClickedBook(String title, String author);
     }
-
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment BookListFragment.
-//     */
-
-//    public static BookListFragment newInstance(String param1, String param2) {
-//        BookListFragment fragment = new BookListFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
 }

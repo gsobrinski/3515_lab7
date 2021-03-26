@@ -26,29 +26,51 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         landscape = findViewById(R.id.frame2) != null;
 
-        bdFragment = new BookDetailsFragment();
-        blFragment = new BookListFragment();
-
         fragmentManager = getSupportFragmentManager();
 
         if (savedInstanceState == null) {
+            blFragment = BookListFragment.newInstance();
             fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).addToBackStack(null).commit();
 
             if (landscape) {
+                bdFragment = BookDetailsFragment.newInstance(null, null);
                 fragmentManager.beginTransaction().replace(R.id.frame2, bdFragment).addToBackStack(null).commit();
             }
         } else {
+            // retrieve saved instance state
             title = savedInstanceState.getString(SAVED_TITLE);
             author = savedInstanceState.getString(SAVED_AUTHOR);
-            if(landscape) {
-                bdFragment = BookDetailsFragment.newInstance(title, author);
-                fragmentManager.beginTransaction().replace(R.id.frame2, bdFragment).addToBackStack(null).commit();
-                fragmentManager.beginTransaction().replace(R.id.frame1, new BookListFragment()).commit();
-            } else {
-                fragmentManager.beginTransaction().replace(R.id.frame1, BookDetailsFragment.newInstance(title, author)).addToBackStack(null).commit();
+            // check if title and author have been created
+            if(title != null && author != null) {
+                // if landscape/tablet
+                if (landscape) {
+                    // reuse bdFragment if possible
+                    if (bdFragment == null) {
+                        bdFragment = BookDetailsFragment.newInstance(title, author);
+                    } else {
+                        bdFragment.setBookDetails(title, author);
+                    }
+                    fragmentManager.beginTransaction().replace(R.id.frame2, bdFragment).addToBackStack(null).commit();
+
+                    // reuse blFragment if possible
+                    if (blFragment == null) {
+                        blFragment = BookListFragment.newInstance();
+                        System.out.println("NEW BOOKLIST");
+                    }
+                    fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).commit();
+
+                // else: small portrait
+                } else {
+                    // reuse bdFragment if possible
+                    if(bdFragment == null) {
+                        bdFragment = BookDetailsFragment.newInstance(title, author);
+                    } else {
+                        bdFragment.setBookDetails(title, author);
+                    }
+                    fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
+                }
             }
         }
-
     }
 
     // implemented from BookListFragment's interface
@@ -60,7 +82,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             BookDetailsFragment bdFragment = BookDetailsFragment.newInstance(title, author);
             fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
         } else {
-            bdFragment.setBookDetails(title, author);
+            // check if bdfragment is null
+            if(bdFragment == null) {
+                bdFragment = BookDetailsFragment.newInstance(title, author);
+            } else {
+                bdFragment.setBookDetails(title, author);
+            }
         }
     }
 

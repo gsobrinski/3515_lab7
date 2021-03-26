@@ -48,16 +48,13 @@ public class ListAdapter extends BaseAdapter {
         TextView title;
         TextView author;
 
-        if(convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item_layout, parent, false);
-            title = (TextView) convertView.findViewById(R.id.title);
-            author = (TextView) convertView.findViewById(R.id.author);
+        View view = inflater.inflate(R.layout.list_item_layout, parent, false);
+        title = (TextView) view.findViewById(R.id.title);
+        author = (TextView) view.findViewById(R.id.author);
 
-            title.setText(titles.get(position));
-            author.setText(authors.get(position));
+        title.setText(titles.get(position));
+        author.setText(authors.get(position));
 
-        }
-
-        return convertView;
+        return view;
     }
 }
