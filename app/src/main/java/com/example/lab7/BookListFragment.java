@@ -56,8 +56,8 @@ public class BookListFragment extends Fragment {
         listView = view.findViewById(R.id.listView);
 
         // get title and author ArrayLists from strings.xml
-        books = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.book_titles)));
-        authors = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.book_authors)));
+//        books = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.book_titles)));
+//        authors = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.book_authors)));
 
         ListAdapter adapter = new ListAdapter(context, books, authors);
 

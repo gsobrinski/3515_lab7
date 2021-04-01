@@ -5,8 +5,10 @@ package com.example.lab7;
 public class Book {
     private String title;
     private String author;
+    private int id;
+    private String coverURL;
 
-    public Book(String title, String author) {
+    public Book(String title, String author, int id, String coverURL) {
         this.title = title;
         this.author = author;
     }
@@ -18,4 +20,8 @@ public class Book {
     public String getAuthor() {
         return author;
     }
+
+    public int getId() { return id; }
+
+    public String getCoverURL() { return coverURL; }
 }
