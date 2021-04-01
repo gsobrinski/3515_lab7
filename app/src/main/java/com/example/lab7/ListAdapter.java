@@ -15,26 +15,24 @@ import java.util.ArrayList;
 public class ListAdapter extends BaseAdapter {
 
     Context context;
-    ArrayList<String> titles;
-    ArrayList<String> authors;
+    BookList bookList;
 
     LayoutInflater inflater;
 
-    public ListAdapter(Context context, ArrayList titles, ArrayList authors) {
+    public ListAdapter(Context context, BookList bookList) {
         this.context = context;
-        this.titles = titles;
-        this.authors = authors;
+        this.bookList = bookList;
         this.inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return titles.size();
+        return bookList.getSize();
     }
 
     @Override
     public Object getItem(int position) {
-        Pair book = new Pair(titles.get(position), authors.get(position));
+        Book book = bookList.getBook(position);
         return book;
     }
 
@@ -52,9 +50,16 @@ public class ListAdapter extends BaseAdapter {
         title = (TextView) view.findViewById(R.id.title);
         author = (TextView) view.findViewById(R.id.author);
 
-        title.setText(titles.get(position));
-        author.setText(authors.get(position));
+        Book book = (Book) getItem(position);
+
+        title.setText(book.getTitle());
+        author.setText(book.getAuthor());
 
         return view;
+    }
+
+    public void updateDataset(BookList bookList) {
+        this.bookList = bookList;
+        this.notifyDataSetChanged();
     }
 }

@@ -110,13 +110,19 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     // implemented from BookSearchActivity's interface
     @Override
-    public void onSearch(DialogFragment dialog) {
-        System.out.println("SEARCH");
+    public void onSearch(DialogFragment dialog, BookList bookList) {
+        if (blFragment == null) {
+            System.out.println("Creating new BookListFragment in onSearch");
+            blFragment = BookListFragment.newInstance(bookList);
+        } else {
+            System.out.println("Updating booklist in onSearch");
+            blFragment.updateDataset(bookList);
+        }
     }
 
     @Override
     public void onCancel(DialogFragment dialog) {
-        System.out.println("CANCEL");
+
     }
 
     @Override

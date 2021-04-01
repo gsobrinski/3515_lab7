@@ -23,7 +23,8 @@ public class BookListFragment extends Fragment {
 
     private BookList bookList;
     // displays the BookList
-    private ListView listView;
+    ListView listView;
+    ListAdapter adapter;
     Context context;
 
     // book title and author
@@ -38,14 +39,24 @@ public class BookListFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context mainContext) {
+    public void onAttach(@NonNull Context mainContext) {
         super.onAttach(mainContext);
         this.context = mainContext;
     }
 
     // FACTORY METHOD
     public static BookListFragment newInstance() {
-        return new BookListFragment();
+        BookListFragment blFragment = new BookListFragment();
+        blFragment.bookList = new BookList();
+        return blFragment;
+    }
+
+    // factory method for updating booklist
+    public static BookListFragment newInstance(BookList bookList) {
+        System.out.println("creating new instance of booklistfragment with booklist");
+        BookListFragment blFragment = new BookListFragment();
+        blFragment.bookList = bookList;
+        return blFragment;
     }
 
     @Override
@@ -55,11 +66,7 @@ public class BookListFragment extends Fragment {
 
         listView = view.findViewById(R.id.listView);
 
-        // get title and author ArrayLists from strings.xml
-//        books = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.book_titles)));
-//        authors = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.book_authors)));
-
-        ListAdapter adapter = new ListAdapter(context, books, authors);
+        adapter = new ListAdapter(context, bookList);
 
         // create adapter to turn string-array into listView
         listView.setAdapter(adapter);
@@ -67,9 +74,9 @@ public class BookListFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Pair book = (Pair) parent.getItemAtPosition(position);
-                String title = (String) book.first;
-                String author = (String) book.second;
+                Book book = (Book) parent.getItemAtPosition(position);
+                String title = (String) book.getTitle();
+                String author = (String) book.getAuthor();
                 // use MainActivity's method in this context
                 BookListInterface blInterface = (BookListInterface) context;
                 blInterface.getClickedBook(title, author);
@@ -77,6 +84,12 @@ public class BookListFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void updateDataset(BookList bookList) {
+        System.out.println("updating dataset in booklistfragment");
+        this.bookList = bookList;
+        adapter.updateDataset(bookList);
     }
 
     interface BookListInterface {
