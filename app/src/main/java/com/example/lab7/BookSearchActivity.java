@@ -55,7 +55,6 @@ public class BookSearchActivity extends DialogFragment {
                 // do search here
                 String searchTerm = editText.getText().toString();
                 String urlSearch = "https://kamorris.com/lab/cis3515/search.php?term=" + searchTerm;
-                //Toast.makeText(context, urlSearch, Toast.LENGTH_SHORT).show();
 
                 JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlSearch, null, new Response.Listener<JSONArray>() {
                     @Override

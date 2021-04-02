@@ -2,6 +2,9 @@ package com.example.lab7;
 
 // Book class that returns a Book object
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Book {
     private String title;
     private String author;
@@ -26,4 +29,15 @@ public class Book {
     public int getId() { return id; }
 
     public String getCoverURL() { return coverURL; }
+
+    public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("title", title);
+            obj.put("author", author);
+            obj.put("id", id);
+            obj.put("coverURL", coverURL);
+        } catch (JSONException e) { e.printStackTrace(); }
+        return obj;
+    }
 }

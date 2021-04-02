@@ -1,5 +1,8 @@
 package com.example.lab7;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -13,9 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import com.squareup.picasso.Picasso;
 
 public class BookDetailsFragment extends Fragment {
 
@@ -30,8 +31,16 @@ public class BookDetailsFragment extends Fragment {
     TextView authorText;
     ImageView coverImage;
 
+    Context context;
+
     public BookDetailsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context mainContext) {
+        super.onAttach(mainContext);
+        this.context = mainContext;
     }
 
     // FACTORY METHOD
@@ -75,14 +84,8 @@ public class BookDetailsFragment extends Fragment {
     public void setBookDetails(String title, String author, String coverURL) {
         titleText.setText(title);
         authorText.setText(author);
-        // convert URL to Drawable
-        InputStream inputStream = null;
-        try {
-            inputStream = (InputStream) new URL(coverURL).getContent();
-        } catch (IOException e) { e.printStackTrace(); }
-        // set the image in the cover imageview
-        Drawable cover = Drawable.createFromStream(inputStream, "src name");
-        coverImage.setImageDrawable(cover);
+        // convert URL to Bitmap
+        Picasso.get().load(coverURL).into(coverImage);
     }
 
 }

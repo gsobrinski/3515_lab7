@@ -9,6 +9,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements BookListFragment.BookListInterface, BookSearchActivity.SearchListenerInterface {
 
     BookDetailsFragment bdFragment;
@@ -20,9 +31,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public static final String SAVED_TITLE = "saved_title";
     public static final String SAVED_AUTHOR = "saved_author";
     public static final String SAVED_COVER_URL = "saved_cover_url";
+    public static final String SAVED_BOOKLIST = "saved_booklist";
     String title;
     String author;
     String coverURL;
+    BookList bookList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +61,17 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             title = savedInstanceState.getString(SAVED_TITLE);
             author = savedInstanceState.getString(SAVED_AUTHOR);
             coverURL = savedInstanceState.getString(SAVED_COVER_URL);
+            // retrieve booklist from saved instance state
+            try {
+                String jsonString = savedInstanceState.getString(SAVED_BOOKLIST);
+                JSONArray jsonArr = new JSONArray(jsonString);
+                bookList = jsonToBooks(jsonArr);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             // check if title and author have been created
-            if(title != null && author != null) {
+            if(title != null && author != null && coverURL != null) {
                 // if landscape/tablet
                 if (landscape) {
                     // reuse bdFragment if possible
@@ -92,9 +114,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     // implemented from BookListFragment's interface
     @Override
-    public void getClickedBook(String title, String author) {
+    public void getClickedBook(String title, String author, String coverURL) {
         this.title = title;
         this.author = author;
+        this.coverURL = coverURL;
         if(!landscape) {
             BookDetailsFragment bdFragment = BookDetailsFragment.newInstance(title, author, coverURL);
             fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
@@ -111,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     // implemented from BookSearchActivity's interface
     @Override
     public void onSearch(DialogFragment dialog, BookList bookList) {
+        this.bookList = bookList;
         if (blFragment == null) {
             System.out.println("Creating new BookListFragment in onSearch");
             blFragment = BookListFragment.newInstance(bookList);
@@ -131,5 +155,54 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         outState.putString(SAVED_TITLE, title);
         outState.putString(SAVED_AUTHOR, author);
         outState.putString(SAVED_COVER_URL, coverURL);
+        // store json string version of booklist
+        JSONArray books = booksToJson();
+        outState.putString(SAVED_BOOKLIST, books.toString());
     }
+
+    private JSONArray booksToJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (int i=0; i < bookList.getSize(); i++) {
+            jsonArray.put(bookList.getBook(i).getJSONObject());
+        }
+        return jsonArray;
+    }
+
+    private BookList jsonToBooks(JSONArray books) {
+        BookList bookList = new BookList();
+        for (int i = 0; i < books.length(); i++) {
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = books.getJSONObject(i);
+                // add all book fields to a Book object and then add that Book to the BookList
+                Book book = new Book(
+                        Integer.parseInt(jsonObject.getString("id")),
+                        jsonObject.getString("title"),
+                        jsonObject.getString("author"),
+                        jsonObject.getString("cover_url"));
+                bookList.addBook(book);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return bookList;
+    }
+
+//    // convert BookList to ArrayList<Book>
+//    private ArrayList<Book> bookToArray(BookList bookList) {
+//        ArrayList<Book> books = new ArrayList<>();
+//        for(int i = 0; i < bookList.getSize(); i++) {
+//            books.add(bookList.getBook(i));
+//        }
+//        return books;
+//    }
+//
+//    // convert ArrayList<Book> to BookList
+//    private BookList arrayToBook(ArrayList<Book> books) {
+//        BookList bookList = new BookList();
+//        for(Book book : books) {
+//            bookList.addBook(book);
+//        }
+//        return bookList;
+//    }
 }

@@ -27,13 +27,6 @@ public class BookListFragment extends Fragment {
     ListAdapter adapter;
     Context context;
 
-    // book title and author
-    ArrayList<String> books;
-    ArrayList<String> authors;
-
-    public static final String TITLES = "titles";
-    public static final String AUTHORS = "authors";
-
     public BookListFragment() {
 
     }
@@ -77,9 +70,10 @@ public class BookListFragment extends Fragment {
                 Book book = (Book) parent.getItemAtPosition(position);
                 String title = (String) book.getTitle();
                 String author = (String) book.getAuthor();
+                String coverURL = (String) book.getCoverURL();
                 // use MainActivity's method in this context
                 BookListInterface blInterface = (BookListInterface) context;
-                blInterface.getClickedBook(title, author);
+                blInterface.getClickedBook(title, author, coverURL);
             }
         });
 
@@ -87,12 +81,11 @@ public class BookListFragment extends Fragment {
     }
 
     public void updateDataset(BookList bookList) {
-        System.out.println("updating dataset in booklistfragment");
         this.bookList = bookList;
         adapter.updateDataset(bookList);
     }
 
     interface BookListInterface {
-        void getClickedBook(String title, String author);
+        void getClickedBook(String title, String author, String coverURL);
     }
 }
