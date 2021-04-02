@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 bookList = new BookList();
             }
 
-            // check if all necessary fields have been created
-
             // if landscape/tablet
             if (landscape) {
                 // reuse bdFragment if possible
@@ -116,7 +114,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 } else {
                     blFragment.updateDataset(bookList);
                 }
-                //fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).commit();
+                // show booklist if no book has been clicked yet
+                if(title == null) {
+                    fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).commit();
+                } else {
+                    fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
+                }
             }
 
         }
@@ -153,13 +156,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     // implemented from BookSearchActivity's interface
     @Override
     public void onSearch(DialogFragment dialog, BookList bookList) {
+
         this.bookList = bookList;
         if (blFragment == null || blFragment.adapter == null) {
             System.out.println("Creating new BookListFragment in onSearch");
             Book book = bookList.getBook(0);
             System.out.println("onsearch book: " + book.getTitle());
             blFragment = BookListFragment.newInstance(bookList);
-            //fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).addToBackStack(null).commit();
         } else {
             System.out.println("Updating booklist in onSearch");
             Book book = bookList.getBook(0);

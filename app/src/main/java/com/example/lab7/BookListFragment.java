@@ -113,6 +113,11 @@ public class BookListFragment extends Fragment {
         System.out.println("booklist in updatedataset: " + bookList);
         this.bookList = bookList;
         adapter.updateDataset(bookList);
+
+        Bundle args = new Bundle();
+        JSONArray books = MainActivity.booksToJson(bookList);
+        args.putString(BOOKS, books.toString());
+        this.setArguments(args);
     }
 
     interface BookListInterface {
