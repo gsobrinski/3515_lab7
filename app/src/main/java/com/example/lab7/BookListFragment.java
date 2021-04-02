@@ -15,6 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +29,8 @@ public class BookListFragment extends Fragment {
     ListView listView;
     ListAdapter adapter;
     Context context;
+
+    public static final String BOOKS = "books";
 
     public BookListFragment() {
 
@@ -41,15 +46,39 @@ public class BookListFragment extends Fragment {
     public static BookListFragment newInstance() {
         BookListFragment blFragment = new BookListFragment();
         blFragment.bookList = new BookList();
+        Bundle args = new Bundle();
+        JSONArray books = MainActivity.booksToJson(new BookList());
+        args.putString(BOOKS, books.toString());
+        blFragment.setArguments(args);
         return blFragment;
     }
 
     // factory method for updating booklist
     public static BookListFragment newInstance(BookList bookList) {
-        System.out.println("creating new instance of booklistfragment with booklist");
+        System.out.println("booklist in blfragment: " + bookList);
         BookListFragment blFragment = new BookListFragment();
         blFragment.bookList = bookList;
+        Bundle args = new Bundle();
+        // store json string version of booklist
+        JSONArray books = MainActivity.booksToJson(bookList);
+        args.putString(BOOKS, books.toString());
+        blFragment.setArguments(args);
         return blFragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            String books = getArguments().getString(BOOKS);
+            // convert back to BookList
+            try {
+                JSONArray jsonArr = new JSONArray(books);
+                bookList = MainActivity.jsonToBooks(jsonArr);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -81,6 +110,7 @@ public class BookListFragment extends Fragment {
     }
 
     public void updateDataset(BookList bookList) {
+        System.out.println("booklist in updatedataset: " + bookList);
         this.bookList = bookList;
         adapter.updateDataset(bookList);
     }

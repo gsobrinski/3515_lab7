@@ -62,44 +62,63 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             author = savedInstanceState.getString(SAVED_AUTHOR);
             coverURL = savedInstanceState.getString(SAVED_COVER_URL);
             // retrieve booklist from saved instance state
-            try {
-                String jsonString = savedInstanceState.getString(SAVED_BOOKLIST);
-                JSONArray jsonArr = new JSONArray(jsonString);
-                bookList = jsonToBooks(jsonArr);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            // check if title and author have been created
-            if(title != null && author != null && coverURL != null) {
-                // if landscape/tablet
-                if (landscape) {
-                    // reuse bdFragment if possible
-                    if (bdFragment == null) {
-                        bdFragment = BookDetailsFragment.newInstance(title, author, coverURL);
-                    } else {
-                        bdFragment.setBookDetails(title, author, coverURL);
+            if(savedInstanceState.getString(SAVED_BOOKLIST) != null) {
+                try {
+                    String jsonString = savedInstanceState.getString(SAVED_BOOKLIST);
+                    System.out.println("jsonstring in saved instance state: " + jsonString);
+                    JSONArray jsonArr = new JSONArray(jsonString);
+                    bookList = jsonToBooks(jsonArr);
+                    if (blFragment != null) {
+                        blFragment.updateDataset(bookList);
                     }
-                    fragmentManager.beginTransaction().replace(R.id.frame2, bdFragment).addToBackStack(null).commit();
-
-                    // reuse blFragment if possible
-                    if (blFragment == null) {
-                        blFragment = BookListFragment.newInstance();
-                        System.out.println("NEW BOOKLIST");
-                    }
-                    fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).commit();
-
-                // else: small portrait
-                } else {
-                    // reuse bdFragment if possible
-                    if(bdFragment == null) {
-                        bdFragment = BookDetailsFragment.newInstance(title, author, coverURL);
-                    } else {
-                        bdFragment.setBookDetails(title, author, coverURL);
-                    }
-                    fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
+                    //Book book = bookList.getBook(0);
+                    //System.out.println("first book in saved instance state: " + book.getTitle() + " " + book.getAuthor() + " " + book.getCoverURL());
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+            } else {
+                bookList = new BookList();
             }
+
+            // check if all necessary fields have been created
+
+            // if landscape/tablet
+            if (landscape) {
+                // reuse bdFragment if possible
+                if (bdFragment == null) {
+                    bdFragment = BookDetailsFragment.newInstance(title, author, coverURL);
+                } else {
+                    bdFragment.setBookDetails(title, author, coverURL);
+                }
+                fragmentManager.beginTransaction().replace(R.id.frame2, bdFragment).addToBackStack(null).commit();
+
+                // reuse blFragment if possible
+                if (blFragment == null) {
+                    blFragment = BookListFragment.newInstance(bookList);
+                } else {
+                    blFragment.updateDataset(bookList);
+                }
+                fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).addToBackStack(null).commit();
+
+            // else: small portrait
+            } else {
+                // reuse bdFragment if possible
+                if(bdFragment == null) {
+                    bdFragment = BookDetailsFragment.newInstance(title, author, coverURL);
+                } else {
+                    bdFragment.setBookDetails(title, author, coverURL);
+                }
+                fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
+
+                // reuse blFragment if possible
+                if (blFragment == null) {
+                    blFragment = BookListFragment.newInstance(bookList);
+                } else {
+                    blFragment.updateDataset(bookList);
+                }
+                //fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).commit();
+            }
+
         }
 
         // trigger the search dialog
@@ -135,13 +154,19 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     @Override
     public void onSearch(DialogFragment dialog, BookList bookList) {
         this.bookList = bookList;
-        if (blFragment == null) {
+        if (blFragment == null || blFragment.adapter == null) {
             System.out.println("Creating new BookListFragment in onSearch");
+            Book book = bookList.getBook(0);
+            System.out.println("onsearch book: " + book.getTitle());
             blFragment = BookListFragment.newInstance(bookList);
+            //fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).addToBackStack(null).commit();
         } else {
             System.out.println("Updating booklist in onSearch");
+            Book book = bookList.getBook(0);
+            System.out.println("onsearch book: " + book.getTitle());
             blFragment.updateDataset(bookList);
         }
+        fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).addToBackStack(null).commit();
     }
 
     @Override
@@ -155,12 +180,14 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         outState.putString(SAVED_TITLE, title);
         outState.putString(SAVED_AUTHOR, author);
         outState.putString(SAVED_COVER_URL, coverURL);
-        // store json string version of booklist
-        JSONArray books = booksToJson();
-        outState.putString(SAVED_BOOKLIST, books.toString());
+        if(bookList != null) {
+            // store json string version of booklist
+            JSONArray books = booksToJson(this.bookList);
+            outState.putString(SAVED_BOOKLIST, books.toString());
+        }
     }
 
-    private JSONArray booksToJson() {
+    public static JSONArray booksToJson(BookList bookList) {
         JSONArray jsonArray = new JSONArray();
         for (int i=0; i < bookList.getSize(); i++) {
             jsonArray.put(bookList.getBook(i).getJSONObject());
@@ -168,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         return jsonArray;
     }
 
-    private BookList jsonToBooks(JSONArray books) {
+    public static BookList jsonToBooks(JSONArray books) {
         BookList bookList = new BookList();
         for (int i = 0; i < books.length(); i++) {
             JSONObject jsonObject = null;
@@ -179,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         Integer.parseInt(jsonObject.getString("id")),
                         jsonObject.getString("title"),
                         jsonObject.getString("author"),
-                        jsonObject.getString("cover_url"));
+                        jsonObject.getString("coverURL"));
                 bookList.addBook(book);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -187,22 +214,4 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         }
         return bookList;
     }
-
-//    // convert BookList to ArrayList<Book>
-//    private ArrayList<Book> bookToArray(BookList bookList) {
-//        ArrayList<Book> books = new ArrayList<>();
-//        for(int i = 0; i < bookList.getSize(); i++) {
-//            books.add(bookList.getBook(i));
-//        }
-//        return books;
-//    }
-//
-//    // convert ArrayList<Book> to BookList
-//    private BookList arrayToBook(ArrayList<Book> books) {
-//        BookList bookList = new BookList();
-//        for(Book book : books) {
-//            bookList.addBook(book);
-//        }
-//        return bookList;
-//    }
 }
