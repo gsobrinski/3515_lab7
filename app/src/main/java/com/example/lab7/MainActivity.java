@@ -33,10 +33,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public static final String SAVED_COVER_URL = "saved_cover_url";
     public static final String SAVED_DURATION = "saved_duration";
     public static final String SAVED_BOOKLIST = "saved_booklist";
+    public static final String SAVED_ID = "saved_id";
     String title;
     String author;
     String coverURL;
     int duration;
+    int id;
     BookList bookList;
 
     @Override
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             author = savedInstanceState.getString(SAVED_AUTHOR);
             coverURL = savedInstanceState.getString(SAVED_COVER_URL);
             duration = savedInstanceState.getInt(SAVED_DURATION);
+            id = savedInstanceState.getInt(SAVED_ID);
             // retrieve booklist from saved instance state
             if(savedInstanceState.getString(SAVED_BOOKLIST) != null) {
                 try {
@@ -182,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         outState.putString(SAVED_AUTHOR, author);
         outState.putString(SAVED_COVER_URL, coverURL);
         outState.putInt(SAVED_DURATION, duration);
+        outState.putInt(SAVED_ID, id);
         if(bookList != null) {
             // store json string version of booklist
             JSONArray books = booksToJson(this.bookList);
