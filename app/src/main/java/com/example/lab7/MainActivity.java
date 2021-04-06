@@ -31,10 +31,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public static final String SAVED_TITLE = "saved_title";
     public static final String SAVED_AUTHOR = "saved_author";
     public static final String SAVED_COVER_URL = "saved_cover_url";
+    public static final String SAVED_DURATION = "saved_duration";
     public static final String SAVED_BOOKLIST = "saved_booklist";
     String title;
     String author;
     String coverURL;
+    int duration;
     BookList bookList;
 
     @Override
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             title = savedInstanceState.getString(SAVED_TITLE);
             author = savedInstanceState.getString(SAVED_AUTHOR);
             coverURL = savedInstanceState.getString(SAVED_COVER_URL);
+            duration = savedInstanceState.getInt(SAVED_DURATION);
             // retrieve booklist from saved instance state
             if(savedInstanceState.getString(SAVED_BOOKLIST) != null) {
                 try {
@@ -159,14 +162,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         this.bookList = bookList;
         if (blFragment == null || blFragment.adapter == null) {
-            System.out.println("Creating new BookListFragment in onSearch");
-            Book book = bookList.getBook(0);
-            System.out.println("onsearch book: " + book.getTitle());
             blFragment = BookListFragment.newInstance(bookList);
         } else {
-            System.out.println("Updating booklist in onSearch");
             Book book = bookList.getBook(0);
-            System.out.println("onsearch book: " + book.getTitle());
             blFragment.updateDataset(bookList);
         }
         fragmentManager.beginTransaction().replace(R.id.frame1, blFragment).addToBackStack(null).commit();
@@ -183,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         outState.putString(SAVED_TITLE, title);
         outState.putString(SAVED_AUTHOR, author);
         outState.putString(SAVED_COVER_URL, coverURL);
+        outState.putInt(SAVED_DURATION, duration);
         if(bookList != null) {
             // store json string version of booklist
             JSONArray books = booksToJson(this.bookList);
@@ -209,7 +208,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         Integer.parseInt(jsonObject.getString("id")),
                         jsonObject.getString("title"),
                         jsonObject.getString("author"),
-                        jsonObject.getString("coverURL"));
+                        jsonObject.getString("coverURL"),
+                        Integer.parseInt(jsonObject.getString("duration")));
                 bookList.addBook(book);
             } catch (JSONException e) {
                 e.printStackTrace();
