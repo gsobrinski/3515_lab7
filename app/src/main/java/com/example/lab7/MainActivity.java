@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     BookDetailsFragment bdFragment;
     BookListFragment blFragment;
+    ControlFragment cFragment;
     FragmentManager fragmentManager;
 
     boolean landscape;
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 bdFragment = BookDetailsFragment.newInstance(null, null, null);
                 fragmentManager.beginTransaction().replace(R.id.frame2, bdFragment).addToBackStack(null).commit();
             }
+
+            cFragment = ControlFragment.newInstance();
+            fragmentManager.beginTransaction().replace(R.id.control, cFragment).addToBackStack(null).commit();
         } else {
             // retrieve saved instance state
             title = savedInstanceState.getString(SAVED_TITLE);
