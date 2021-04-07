@@ -11,16 +11,17 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import edu.temple.audiobookplayer.AudiobookService;
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.BookListInterface, BookSearchActivity.SearchListenerInterface {
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookListInterface, BookSearchActivity.SearchListenerInterface, ControlFragment.ControlInterface {
 
     // FRAGMENTS
     BookDetailsFragment bdFragment;
@@ -47,6 +48,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     // AUDIO PLAYER
     AudiobookService.MediaControlBinder mcBinder;
     boolean connected;
+    ImageButton pauseButton;
+    ImageButton playButton;
+    ImageButton stopButton;
+    SeekBar progress;
 
     ServiceConnection serviceConn = new ServiceConnection() {
         @Override
@@ -72,6 +77,23 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public void onStop(){
         super.onStop();
         unbindService(serviceConn);
+    }
+
+    // implemented from ControlFragment's interface
+    // ControlFragment sends an id of the current book and
+    @Override
+    public void playAudioBook(int id) {
+        mcBinder.play(id);
+    }
+
+    @Override
+    public void pauseAudioBook() {
+        mcBinder.pause();
+    }
+
+    @Override
+    public void stopAudioBook() {
+        mcBinder.stop();
     }
 
     @Override
@@ -103,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             coverURL = savedInstanceState.getString(SAVED_COVER_URL);
             duration = savedInstanceState.getInt(SAVED_DURATION);
             id = savedInstanceState.getInt(SAVED_ID);
+
             // retrieve booklist from saved instance state
             if(savedInstanceState.getString(SAVED_BOOKLIST) != null) {
                 try {
@@ -163,9 +186,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
                 }
             }
-
         }
-
         // trigger the search dialog
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
