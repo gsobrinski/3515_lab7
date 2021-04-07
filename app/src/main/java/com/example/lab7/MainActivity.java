@@ -5,23 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
+import edu.temple.audiobookplayer.AudiobookService;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.BookListInterface, BookSearchActivity.SearchListenerInterface {
 
+    // FRAGMENTS
     BookDetailsFragment bdFragment;
     BookListFragment blFragment;
     ControlFragment cFragment;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     boolean landscape;
 
+    // SAVED STATE KEYS/VALUES
     public static final String SAVED_TITLE = "saved_title";
     public static final String SAVED_AUTHOR = "saved_author";
     public static final String SAVED_COVER_URL = "saved_cover_url";
@@ -41,6 +43,36 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     int duration;
     int id;
     BookList bookList;
+
+    // AUDIO PLAYER
+    AudiobookService.MediaControlBinder mcBinder;
+    boolean connected;
+
+    ServiceConnection serviceConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mcBinder = (AudiobookService.MediaControlBinder) service;
+            connected = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            connected = false;
+        }
+    };
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Intent serviceIntent = new Intent(this, AudiobookService.class);
+        bindService(serviceIntent, serviceConn, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        unbindService(serviceConn);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
