@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ControlFragment extends Fragment {
     Context context;
@@ -81,13 +82,7 @@ public class ControlFragment extends Fragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (id == 0) {
-//                    Toast.makeText(context, "You have not selected a book!", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    // play the book
-//                    controlInterface.getAudioBook(id);
-//                }
-                controlInterface.playAudioBook(1);
+                controlInterface.playAudioBook();
             }
         });
 
@@ -114,6 +109,10 @@ public class ControlFragment extends Fragment {
         this.current = current;
     }
 
+    public void setTitle(String title) {
+        nowPlaying.setText(title);
+    }
+
     private void initViews() {
         pauseButton = view.findViewById(R.id.pauseButton);
         playButton = view.findViewById(R.id.playButton);
@@ -122,7 +121,7 @@ public class ControlFragment extends Fragment {
     }
 
     interface ControlInterface {
-        void playAudioBook(int id);
+        void playAudioBook();
         void pauseAudioBook();
         void stopAudioBook();
     }

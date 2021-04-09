@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,10 +49,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     // AUDIO PLAYER
     AudiobookService.MediaControlBinder mcBinder;
     boolean connected;
-    ImageButton pauseButton;
-    ImageButton playButton;
-    ImageButton stopButton;
-    SeekBar progress;
 
     ServiceConnection serviceConn = new ServiceConnection() {
         @Override
@@ -80,10 +77,14 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     // implemented from ControlFragment's interface
-    // ControlFragment sends an id of the current book and
     @Override
-    public void playAudioBook(int id) {
-        mcBinder.play(id);
+    public void playAudioBook() {
+        if(id == 0) {
+            Toast.makeText(MainActivity.this, "You have not selected a book!", Toast.LENGTH_SHORT).show();
+        } else {
+            mcBinder.play(id);
+            cFragment.setTitle(title);
+        }
     }
 
     @Override
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     @Override
     public void stopAudioBook() {
         mcBinder.stop();
+        cFragment.setTitle("");
     }
 
     @Override
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             coverURL = savedInstanceState.getString(SAVED_COVER_URL);
             duration = savedInstanceState.getInt(SAVED_DURATION);
             id = savedInstanceState.getInt(SAVED_ID);
+            System.out.println("id in mainactivity saved state: " + id);
 
             // retrieve booklist from saved instance state
             if(savedInstanceState.getString(SAVED_BOOKLIST) != null) {
@@ -144,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             } else {
                 bookList = new BookList();
             }
+
+            cFragment = ControlFragment.newInstance(id, duration, 0);
+            cFragment.setAudioBook(id, duration, 0);
 
             // if landscape/tablet
             if (landscape) {
@@ -199,10 +205,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     // implemented from BookListFragment's interface
     @Override
-    public void getClickedBook(String title, String author, String coverURL) {
+    public void getClickedBook(String title, String author, String coverURL, int id, int duration) {
         this.title = title;
         this.author = author;
         this.coverURL = coverURL;
+        this.id = id;
+        this.duration = duration;
         if(!landscape) {
             BookDetailsFragment bdFragment = BookDetailsFragment.newInstance(title, author, coverURL);
             fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();

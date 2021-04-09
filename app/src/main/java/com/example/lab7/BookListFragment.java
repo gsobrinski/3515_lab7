@@ -93,9 +93,11 @@ public class BookListFragment extends Fragment {
                 String title = (String) book.getTitle();
                 String author = (String) book.getAuthor();
                 String coverURL = (String) book.getCoverURL();
+                int bookId = (int) book.getId();
+                int duration = (int) book.getDuration();
                 // use MainActivity's method in this context
                 BookListInterface blInterface = (BookListInterface) context;
-                blInterface.getClickedBook(title, author, coverURL);
+                blInterface.getClickedBook(title, author, coverURL, bookId, duration);
             }
         });
 
@@ -114,6 +116,6 @@ public class BookListFragment extends Fragment {
     }
 
     interface BookListInterface {
-        void getClickedBook(String title, String author, String coverURL);
+        void getClickedBook(String title, String author, String coverURL, int id, int duration);
     }
 }
