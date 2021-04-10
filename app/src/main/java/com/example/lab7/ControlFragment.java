@@ -21,7 +21,7 @@ public class ControlFragment extends Fragment {
     ImageButton playButton;
     ImageButton stopButton;
     TextView nowPlaying;
-    SeekBar progress;
+    SeekBar progressSeekBar;
 
     int id;
     int duration;
@@ -100,6 +100,26 @@ public class ControlFragment extends Fragment {
             }
         });
 
+        progressSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser) {
+                    //progressSeekBar.setProgress(progress);
+                    controlInterface.seekAudioBook(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
         return view;
     }
 
@@ -113,16 +133,23 @@ public class ControlFragment extends Fragment {
         nowPlaying.setText(title);
     }
 
+    public void setProgress(int progress, int duration){
+        progressSeekBar.setMax(duration);
+        progressSeekBar.setProgress(progress);
+    }
+
     private void initViews() {
         pauseButton = view.findViewById(R.id.pauseButton);
         playButton = view.findViewById(R.id.playButton);
         stopButton = view.findViewById(R.id.stopButton);
         nowPlaying = view.findViewById(R.id.nowPlaying);
+        progressSeekBar = view.findViewById(R.id.seekBar);
     }
 
     interface ControlInterface {
         void playAudioBook();
         void pauseAudioBook();
         void stopAudioBook();
+        void seekAudioBook(int progress);
     }
 }

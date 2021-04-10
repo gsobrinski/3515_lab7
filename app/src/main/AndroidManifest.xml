@@ -14,6 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Lab7"
         tools:replace="android:theme">
+        <service
+            android:name="edu.temple.audiobookplayer.AudiobookService"
+            android:label="Audiobook Service" >
+        </service>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
