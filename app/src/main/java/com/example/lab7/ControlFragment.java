@@ -30,6 +30,9 @@ public class ControlFragment extends Fragment {
     public static final String DURATION = "duration";
     public static final String CURRENT = "current";
 
+    int savedProgress = 0;
+    int savedDuration = 0;
+
     ControlInterface controlInterface;
 
     public ControlFragment() {
@@ -74,10 +77,16 @@ public class ControlFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_control, container, false);
+
+        // initialize views
         initViews();
 
         // create interface to interact with MainActivity
         controlInterface = (ControlInterface) context;
+
+        if(savedDuration > 0 && savedProgress > 0) {
+            setProgress(savedProgress, savedDuration);
+        }
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,8 +143,13 @@ public class ControlFragment extends Fragment {
     }
 
     public void setProgress(int progress, int duration){
-        progressSeekBar.setMax(duration);
-        progressSeekBar.setProgress(progress);
+        if(progressSeekBar != null) {
+            progressSeekBar.setMax(duration);
+            progressSeekBar.setProgress(progress);
+        } else {
+            savedProgress = progress;
+            savedDuration = duration;
+        }
     }
 
     private void initViews() {

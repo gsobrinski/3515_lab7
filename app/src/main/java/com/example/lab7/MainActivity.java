@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public static final String SAVED_DURATION = "saved_duration";
     public static final String SAVED_BOOKLIST = "saved_booklist";
     public static final String SAVED_ID = "saved_id";
+    public static final String SAVED_PROGRESS = "saved_progress";
     String title;
     String author;
     String coverURL;
@@ -51,16 +52,17 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     // AUDIO PLAYER
     AudiobookService.MediaControlBinder mcBinder;
-    boolean connected;
     ServiceConnection activeConnection = null;
-    int progress;
+    int progress = 0;
 
     // book progress handler
     Handler progressHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             AudiobookService.BookProgress bookProgress = (AudiobookService.BookProgress) msg.obj;
-            progress = bookProgress.getProgress();
+            if(bookProgress != null) {
+                progress = bookProgress.getProgress();
+            }
             if(cFragment != null) {
                 cFragment.setProgress(progress, duration);
             }
@@ -73,8 +75,18 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         public void onServiceConnected(ComponentName name, IBinder service) {
             activeConnection = playConnection;
             mcBinder = (AudiobookService.MediaControlBinder) service;
-            // play the book
-            mcBinder.play(id);
+
+            // if partway through the book
+            if(progress > 0) {
+                mcBinder.play(id, progress);
+            // if starting a new book
+            } else {
+                mcBinder.play(id);
+                progress = 0;
+                if(cFragment != null) {
+                    cFragment.setProgress(progress, duration);
+                }
+            }
             // set up the progress handler to receive messages
             mcBinder.setProgressHandler(progressHandler);
         }
@@ -104,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             activeConnection = stopConnection;
             mcBinder = (AudiobookService.MediaControlBinder) service;
             mcBinder.stop();
+            progress = 0;
+            if(cFragment != null) {
+                cFragment.setProgress(progress, duration);
+            }
         }
 
         @Override
@@ -211,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             coverURL = savedInstanceState.getString(SAVED_COVER_URL);
             duration = savedInstanceState.getInt(SAVED_DURATION);
             id = savedInstanceState.getInt(SAVED_ID);
+            progress = savedInstanceState.getInt(SAVED_PROGRESS);
             System.out.println("id in mainactivity saved state: " + id);
 
             // retrieve booklist from saved instance state
@@ -295,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         this.coverURL = coverURL;
         this.id = id;
         this.duration = duration;
+        progress = 0;
         if(!landscape) {
             BookDetailsFragment bdFragment = BookDetailsFragment.newInstance(title, author, coverURL);
             fragmentManager.beginTransaction().replace(R.id.frame1, bdFragment).addToBackStack(null).commit();
@@ -335,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         outState.putString(SAVED_COVER_URL, coverURL);
         outState.putInt(SAVED_DURATION, duration);
         outState.putInt(SAVED_ID, id);
+        outState.putInt(SAVED_PROGRESS, progress);
         if(bookList != null) {
             // store json string version of booklist
             JSONArray books = booksToJson(this.bookList);
